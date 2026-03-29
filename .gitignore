@@ -1,7 +1,28 @@
-venv/
+# Python
 __pycache__/
 *.pyc
+
+# Virtual environment
+venv/
+
+# Environment variables (SECRETS)
+.env
+
+# MLflow
 mlruns/
 *.db
-.env
+
+# Data (raw + large files)
+data/
+
+# Models (optional)
+models/
+
+# Jupyter
 .ipynb_checkpoints/
+
+# Logs
+*.log
+
+# OS
+.DS_Store

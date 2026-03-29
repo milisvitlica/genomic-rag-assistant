@@ -1,0 +1,11 @@
+mlflow
+torch
+numpy
+pandas
+sentence-transformers
+chromadb
+llama-index
+fastapi
+uvicorn
+python-dotenv
+prefect
