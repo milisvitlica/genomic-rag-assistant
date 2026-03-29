@@ -1,21 +1,33 @@
 import pandas as pd
 
-df = pd.read_csv('data/uniprotkb_Human_proteins_AND_model_orga_2026_03_20.tsv', sep='\t')
+df = pd.read_csv('data/raw/uniprotkb_Human_proteins_AND_model_orga_2026_03_20.tsv', sep='\t')
 
-df.head(100).to_markdown()
+docs = []
 
-# documents = []
-# for _, row in df.iterrows():
-#     protein = row.get('Protein', '')
-#     gene = row.get('Gene', '')
-#     function = row.get('Function', '')
-#     location = row.get('Location', '')
-#     disease = row.get('Disease', '')
+cols = [
+    'Entry',
+    'Protein names',
+    'Gene Names',
+    'Function [CC]',
+    'Subcellular location [CC]',
+    'Gene Ontology (biological process)',
+    'Involvement in disease'
+]
 
-#     doc = f"""Protein: {protein}
-# Gene: {gene}
-# Function: {function}
-# Location: {location}
-# Disease: {disease}
-# """
-#     documents.append(doc.strip())
+for _, row in df.iterrows():
+    text = f"""
+        Protein: {row['Protein names']}
+        Gene: {row['Gene Names']}
+        Function: {row['Function [CC]']}
+        Location: {row['Subcellular location [CC]']}
+        Biological Process: {row['Gene Ontology (biological process)']}
+        Disease: {row['Involvement in disease']}
+        """
+    
+    docs.append({
+        "text": text.strip(),
+        "metadata": {
+            "entry": row['Entry'],
+            "length": row.get('Length', None)
+        }
+    })
