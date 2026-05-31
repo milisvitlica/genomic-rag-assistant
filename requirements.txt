@@ -3,6 +3,8 @@ torch
 numpy
 pandas
 sentence-transformers
+transformers
+accelerate
 chromadb
 llama-index
 fastapi
