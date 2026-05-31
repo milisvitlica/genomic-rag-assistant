@@ -2,6 +2,7 @@ mlflow
 torch
 numpy
 pandas
+pyarrow
 sentence-transformers
 transformers
 accelerate
