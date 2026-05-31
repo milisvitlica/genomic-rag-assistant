@@ -13,7 +13,7 @@ data_raw = project_root / "data/raw"
 data_processed = project_root / "data/processed"
 chroma_dir = project_root / "data/chroma_db"
 
-CLINVAR_RAW = data_raw / "clinvar_clean_snv_grch38.parquet"
+CLINVAR_RAW = data_raw / "clinvar_reliable_grch38.parquet"
 CLINVAR_CLEAN = data_processed / "clinvar_rag.parquet"
 CLINVAR_EXPORT = data_processed / "docs_for_rag_clinvar.jsonl"
 CLINVAR_EMBEDDINGS = data_processed / "clinvar_chunk_embeddings.npy"

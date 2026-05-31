@@ -18,8 +18,8 @@ python src/ingest_clinvar.py
 python src/build_clinvar_index.py
 ```
 
-- **Raw:** `data/raw/clinvar_clean_snv_grch38.parquet` (GRCh38 SNVs from NCBI)
-- **Cleaned:** `data/processed/clinvar_rag.parquet` (~11.7k variants: expert-reviewed / practice guideline, non-VUS, SNV)
+- **Raw:** `data/raw/clinvar_reliable_grch38.parquet` (GRCh38, with consistant pathogenicity assesment, from NCBI)
+- **Cleaned:** `data/processed/clinvar_rag.parquet` (~11.7k variants: non-VUS, SNV)
 - **Chroma collection:** `clinvar_chunks` (1 merged chunk per variant)
 
 ### UniProt
@@ -52,8 +52,8 @@ Default LLM: `Qwen/Qwen2.5-7B-Instruct` (ungated). On CPU this needs ~14GB RAM; 
 
 | Notebook | Purpose |
 |---|---|
-| `notebooks/clinvar_eda.ipynb` | ClinVar value counts, phenotype cleaning, RAG subset preview |
-| `notebooks/uniprot_eda.ipynb` | UniProt head, gene lookup, prefix-clean samples |
+| `notebooks/clinvar_eda.ipynb` | ClinVar value counts, phenotype cleaning|
+| `notebooks/uniprot_eda.ipynb` | UniProt head, gene lookup, fields for RAG|
 
 ## Setup
 

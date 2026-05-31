@@ -1,4 +1,4 @@
-"""Download ClinVar variant summary and write data/raw/clinvar_clean_snv_grch38.parquet."""
+"""Download ClinVar variant summary and write data/raw/clinvar_reliable_grch38.parquet."""
 
 from pathlib import Path
 
@@ -6,7 +6,7 @@ import pandas as pd
 
 project_root = Path(__file__).resolve().parents[1]
 data_raw = project_root / "data/raw"
-CLINVAR_PARQUET = data_raw / "clinvar_clean_snv_grch38.parquet"
+CLINVAR_PARQUET = data_raw / "clinvar_reliable_grch38.parquet"
 CLINVAR_URL = "https://ftp.ncbi.nlm.nih.gov/pub/clinvar/tab_delimited/variant_summary.txt.gz"
 
 columns = [
