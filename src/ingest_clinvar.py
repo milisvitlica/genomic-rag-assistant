@@ -25,7 +25,7 @@ dtype_map = {
 allowed_review = {
     "practice guideline",
     "reviewed by expert panel",
-    "criteria provided, multiple submitters, no conflicts",
+    # "criteria provided, multiple submitters, no conflicts", # too many...
 }
 
 chunks = []

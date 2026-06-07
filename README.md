@@ -46,7 +46,7 @@ Open and run top to bottom:
 
 Notebooks load only the **top-ranked records** from the processed parquet (not the full dataset) to keep memory use low. Set `LOAD_LLM = False` in the last cell to skip summarization.
 
-Default LLM: `Qwen/Qwen2.5-7B-Instruct` (ungated). On CPU this needs ~14GB RAM; a GPU is recommended.
+Default LLM: `Qwen/Qwen2.5-0.5B-Instruct` (~2GB RAM). Use 3B only with 8GB+ RAM. GPU recommended for larger models.
 
 ## EDA notebooks
 
@@ -63,8 +63,6 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-Optional: set `HF_TOKEN` for Hugging Face model downloads.
-
 ## Project layout
 
 ```
@@ -73,6 +71,8 @@ src/
   ingest_uniprot.py       # download UniProt → raw parquet
   build_clinvar_index.py  # clean, filter, chunk, embed, Chroma
   build_uniprot_index.py
+  rag_search.py           # vector search + context building
+  rag_summary.py          # LLM load + summarization
 notebooks/
   clinvar_eda.ipynb
   clinvar_rag.ipynb
@@ -88,6 +88,6 @@ data/
 
 - **Embeddings:** `BAAI/bge-small-en-v1.5` (sentence-transformers)
 - **Vector store:** ChromaDB
-- **Summarization:** transformers + PyTorch (Qwen2.5 7B Instruct)
+- **Summarization:** transformers + PyTorch (Qwen2.5 0.5B Instruct)
 
 Chunking mode can be changed via `CHUNK_MODE` at the top of each `build_*_index.py` script (`"merged"` or `"by_field"`).

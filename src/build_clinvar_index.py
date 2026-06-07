@@ -23,6 +23,14 @@ CHUNK_MODE = "merged"  # "merged" | "by_field"
 CHROMA_BATCH_SIZE = 5000
 EMBED_BATCH_SIZE = 64
 EMBED_MODEL = "BAAI/bge-small-en-v1.5"
+ALLOWED_CLINICAL_SIGNIFICANCE = {
+    "Likely benign",
+    "Benign",
+    "Benign/Likely benign",
+    "Pathogenic",
+    "Pathogenic/Likely pathogenic",
+    "Likely pathogenic",
+}
 
 FIELD_SPECS = [
     ("gene", "GeneSymbol"),
@@ -118,7 +126,7 @@ df["PhenotypeList"] = df["PhenotypeList"].apply(
 )
 
 df = df[df["ReviewStatus"].isin(["practice guideline", "reviewed by expert panel"])].copy()
-df = df[df["ClinicalSignificance"] != "Uncertain significance"].copy()
+df = df[df["ClinicalSignificance"].isin(ALLOWED_CLINICAL_SIGNIFICANCE)].copy()
 df = df[df["Type"] == "single nucleotide variant"].copy()
 
 data_processed.mkdir(parents=True, exist_ok=True)
