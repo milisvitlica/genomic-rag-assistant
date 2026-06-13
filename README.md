@@ -57,7 +57,10 @@ Set `SUMMARIZER_BACKEND` in each RAG notebook:
 | `"local"` (default) | `Qwen/Qwen2.5-0.5B-Instruct` | ~2GB RAM; use 3B only with 8GB+ RAM. GPU recommended for larger models. |
 | `"openai"` | `gpt-4o-mini` | Requires `OPENAI_API_KEY` in `.env`. No local model load. |
 
-To inspect retrieval without summarization, stop after the search cell and use `result["context"]`.
+To inspect retrieval without summarization, stop after the search cell and use `result["context"]`. After summarization, each notebook appends via `append_rag_report()`:
+
+- `reports/rag_log.md` — query, timestamp, search mode, summarizer, summary (tracked in git)
+- `data/reports/rag_log.csv` — same fields plus ranked hits (JSON) and full LLM context (gitignored)
 
 ## EDA notebooks
 
@@ -90,16 +93,20 @@ src/
   build_uniprot_index.py
   rag_search.py           # vector search, context building, combined search
   rag_summary.py          # LLM load + summarization
+  rag_export.py           # append RAG outputs to markdown + CSV
 notebooks/
   clinvar_eda.ipynb
   clinvar_rag.ipynb
   uniprot_eda.ipynb
   uniprot_rag.ipynb
   combined_rag.ipynb
+reports/
+  rag_log.md      # RAG summary log (git-tracked)
 data/
   raw/          # downloaded parquets
   processed/    # cleaned parquets, jsonl exports, embeddings
   chroma_db/    # persistent vector store
+  reports/      # RAG CSV log (gitignored via data/)
 ```
 
 ## Tech
