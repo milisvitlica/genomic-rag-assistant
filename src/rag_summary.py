@@ -1,9 +1,13 @@
-"""Load LLM and summarize RAG context."""
+"""Load LLM and summarize RAG context (local or OpenAI API)."""
 
 import gc
+import os
 
 import torch
+from dotenv import load_dotenv
 from transformers import AutoModelForCausalLM, AutoTokenizer
+
+load_dotenv()
 
 
 def load_llm(model_name, model=None, tokenizer=None):
@@ -32,19 +36,18 @@ def load_llm(model_name, model=None, tokenizer=None):
     return model, tokenizer
 
 
-def summarize(query, context, model, tokenizer, system_prompt, max_new_tokens):
-    # query/context/system_prompt: str, model/tokenizer: transformers objects
-    # max_new_tokens: int -> str (generated summary)
+def _user_message(query, context):
+    return (
+        f"Query: {query}\n\n"
+        f"Retrieved evidence:\n\n{context}\n\n"
+        "Write a short summary answering the query from this evidence."
+    )
+
+
+def _summarize_local(query, context, model, tokenizer, system_prompt, max_new_tokens):
     messages = [
         {"role": "system", "content": system_prompt},
-        {
-            "role": "user",
-            "content": (
-                f"Query: {query}\n\n"
-                f"Retrieved evidence:\n\n{context}\n\n"
-                "Write a short summary answering the query from this evidence."
-            ),
-        },
+        {"role": "user", "content": _user_message(query, context)},
     ]
     prompt = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
     inputs = tokenizer([prompt], return_tensors="pt").to(model.device)
@@ -52,3 +55,49 @@ def summarize(query, context, model, tokenizer, system_prompt, max_new_tokens):
         output_ids = model.generate(**inputs, max_new_tokens=max_new_tokens, do_sample=False)
     new_tokens = output_ids[0][len(inputs.input_ids[0]):]
     return tokenizer.decode(new_tokens, skip_special_tokens=True).strip()
+
+
+def _summarize_openai(query, context, system_prompt, max_new_tokens, api_model):
+    from openai import OpenAI
+
+    api_key = os.getenv("OPENAI_API_KEY")
+    if not api_key:
+        raise ValueError(
+            "OPENAI_API_KEY not set. Add it to .env or export it in your shell."
+        )
+
+    client = OpenAI(api_key=api_key)
+    response = client.chat.completions.create(
+        model=api_model,
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": _user_message(query, context)},
+        ],
+        max_tokens=max_new_tokens,
+        temperature=0,
+    )
+    print(f"Summarized via OpenAI: {api_model}")
+    return response.choices[0].message.content.strip()
+
+
+def summarize(
+    query,
+    context,
+    model,
+    tokenizer,
+    system_prompt,
+    max_new_tokens,
+    *,
+    backend="local",
+    api_model="gpt-4o-mini",
+):
+    # backend: "local" (transformers) or "openai" (API; model/tokenizer ignored)
+    if backend == "openai":
+        return _summarize_openai(query, context, system_prompt, max_new_tokens, api_model)
+    if backend != "local":
+        raise ValueError(f"Unknown backend: {backend!r}. Use 'local' or 'openai'.")
+    if model is None or tokenizer is None:
+        raise ValueError("backend='local' requires model and tokenizer from load_llm()")
+    return _summarize_local(
+        query, context, model, tokenizer, system_prompt, max_new_tokens,
+    )
