@@ -211,7 +211,7 @@ def append_rag_csv(
             writer.writeheader()
         writer.writerow(row)
 
-    print(f"Appended RAG CSV row to {path}")
+    print(f"Appended RAG CSV row to {path.name}")
     return path
 
 
@@ -246,7 +246,7 @@ def append_rag_report(
         content = _REPORT_HEADER + "\n" + entry
 
     path.write_text(content, encoding="utf-8")
-    print(f"Appended RAG report to {path}")
+    print(f"Appended RAG report to {path.name}")
 
     csv_path = Path(csv_path) if csv_path else path.with_suffix(".csv")
     append_rag_csv(
