@@ -215,7 +215,15 @@ def print_combined_retrieval_summary(
     for hit in combined_ranked:
         source_counts[hit["source"]] = source_counts.get(hit["source"], 0) + 1
     breakdown = ", ".join(f"{k}={v}" for k, v in sorted(source_counts.items()))
-    print(f"Top {top_k_results} breakdown: {breakdown}")
+    print(f"Top {len(combined_ranked)} breakdown: {breakdown}")
+    for rank, hit in enumerate(combined_ranked, 1):
+        meta = hit["metadata"] or {}
+        ident = meta.get("variation_id") or meta.get("entry_name") or "?"
+        sim = 1.0 - hit["distance"]
+        print(
+            f"  {rank}. [{hit['source']}] {ident} gene={meta.get('gene')} "
+            f"similarity={sim:.3f}"
+        )
 
 
 def print_combined_hits(ranked):
@@ -235,9 +243,18 @@ def print_combined_hits(ranked):
                 f"entry_name={meta.get('entry_name')} "
                 f"accession={meta.get('accession')} gene={meta.get('gene')}"
             )
-        print(f"{rank}. [{source}] {label} best_chunk={chunk_type} dist={dist:.4f}")
+        sim = 1.0 - dist  # cosine distance -> cosine similarity
+        print(f"{rank}. [{source}] {label} best_chunk={chunk_type} cos_sim={sim:.4f} dist={dist:.4f}")
         print(hit["text"][:500] + ("..." if len(hit["text"]) > 500 else ""))
         print()
+
+
+NO_EVIDENCE_CONTEXT = (
+    "User query: {query}\n\n"
+    "No records passed the relevance threshold (min cosine similarity {min_similarity}; "
+    "best match similarity was {best_similarity}). No relevant evidence was retrieved from "
+    "ClinVar or UniProt for this query."
+)
 
 
 def search_combined(
@@ -247,9 +264,13 @@ def search_combined(
     top_k_results,
     chroma_dir,
     embed_model,
+    min_similarity=None,
     verbose=True,
 ):
     # configs: dict mapping source name -> search config (same shape as search())
+    # min_similarity: float | None in [0,1] — drop hits whose best cosine similarity
+    # falls below this (loose relevance gate so off-topic queries retrieve nothing).
+    # Compared in Chroma-native cosine-distance space via distance = 1 - similarity.
     # returns dict with query, ranked, per_source, records_by_source, context
     client = chromadb.PersistentClient(path=str(chroma_dir))
     per_source = {}
@@ -270,13 +291,45 @@ def search_combined(
         }
         candidates.extend(_tag_hits(best_by_group.values(), source_name))
 
-    combined_ranked = sorted(candidates, key=lambda x: x["distance"])[:top_k_results]
+    ranked_all = sorted(candidates, key=lambda x: x["distance"])
+    best_distance = ranked_all[0]["distance"] if ranked_all else None
+    best_similarity = (1.0 - best_distance) if best_distance is not None else None
+    if min_similarity is not None:
+        max_distance = 1.0 - min_similarity  # compare in native cosine-distance space
+        kept = [h for h in ranked_all if h["distance"] <= max_distance]
+    else:
+        kept = ranked_all
+    combined_ranked = kept[:top_k_results]
 
     if verbose:
         print_combined_retrieval_summary(
             query, top_k_chunks, top_k_results, per_source, combined_ranked,
         )
+        if min_similarity is not None:
+            n_dropped = len(ranked_all) - len(kept)
+            best_str = f"{best_similarity:.4f}" if best_similarity is not None else "n/a"
+            print(
+                f"\nRelevance gate: min cosine similarity={min_similarity} (best={best_str}). "
+                f"{len(kept)} record(s) passed, {n_dropped} dropped."
+            )
         print_combined_hits(combined_ranked)
+
+    # No relevant records: return an explicit "no evidence" context for the LLM to abstain on.
+    if not combined_ranked:
+        context = NO_EVIDENCE_CONTEXT.format(
+            query=query,
+            min_similarity=min_similarity,
+            best_similarity=f"{best_similarity:.4f}" if best_similarity is not None else "n/a",
+        )
+        if verbose:
+            print(f"\n{'=' * 60}\nNO RELEVANT EVIDENCE\n{'=' * 60}\n{context}")
+        return {
+            "query": query,
+            "ranked": [],
+            "per_source": per_source,
+            "records_by_source": {},
+            "context": context,
+        }
 
     records_by_source = {}
     sections = []
@@ -300,8 +353,10 @@ def search_combined(
         )
         header = config["section_header_template"].format(rank=rank, **meta)
         source_tag = source_name.upper()
+        sim = 1.0 - hit["distance"]
+        score_line = f"(relevance: cosine_similarity={sim:.3f}, cosine_distance={hit['distance']:.3f})"
         sections.append(
-            f"[{source_tag}] {header}\n\n"
+            f"[{source_tag}] {header} {score_line}\n\n"
             f"{config['full_record_label']}:\n{full_record}"
         )
 

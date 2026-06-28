@@ -173,7 +173,10 @@ try:
     client.delete_collection(UNIPROT_COLLECTION)
 except Exception:
     pass
-collection = client.create_collection(UNIPROT_COLLECTION)
+collection = client.create_collection(
+    UNIPROT_COLLECTION,
+    metadata={"hnsw:space": "cosine"},
+)
 for i in range(0, len(ids), CHROMA_BATCH_SIZE):
     collection.add(
         ids=ids[i : i + CHROMA_BATCH_SIZE],

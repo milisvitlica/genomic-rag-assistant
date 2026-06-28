@@ -666,3 +666,177 @@ The query about APOBEC deamination does not have relevant information in the pro
 ### Summary
 
 Insulin-like growth factor 1 (IGF-1), also known as Insulin-like growth factor I or IGF-I, is a protein encoded by the IGF1 gene (UniProt Entry Name: IGF1_HUMAN, Accession: P05019). It plays a crucial role in growth promotion and metabolic regulation, being structurally related to insulin but with greater growth-promoting activity. IGF-1 stimulates glucose transport and glycogen synthesis in osteoblasts and is involved in various signaling pathways, including the PI3K-AKT and Ras-MAPK pathways. It acts as a ligand for the insulin-like growth factor 1 receptor (IGF1R), which mediates its effects on cell growth and survival. Variants in the IGF1 gene can lead to conditions such as insulin-like growth factor I deficiency.
+
+---
+
+## Query: extrachromosomal segregation
+
+**Run:** 2026-06-27 18:37:38 UTC · **Search:** combined (ClinVar + UniProt) · **Summarizer:** openai (`gpt-4o-mini`)
+
+### Summary
+
+The query about "extrachromosomal segregation" does not have direct evidence in the provided records. However, related information can be found in the context of chromosomal behavior during cell division.
+
+From the UniProt records, the protein BUB1B (Entry Name: BUB1B_HUMAN) is essential for the mitotic checkpoint, which ensures proper chromosome attachment to the spindle during mitosis. Defects in the BUB1B gene are associated with premature chromatid separation (PCS), which involves separate and splayed chromatids during metaphase. This condition can lead to tumor formation and is noted in the context of chromosomal stability.
+
+Additionally, the protein ESCO2 (Entry Name: ESCO2_HUMAN) is involved in establishing sister chromatid cohesion, which is crucial for maintaining chromosomal integrity during cell division. Variants in the ESCO2 gene are linked to disorders characterized by premature centromere separation, which may relate to the concept of extrachromosomal segregation.
+
+In summary, while there is no specific mention of "extrachromosomal segregation," the proteins BUB1B and ESCO2 are involved in processes that ensure proper chromosomal behavior during cell division, with implications for chromosomal stability and segregation.
+
+---
+
+## Query: muscle atrophy
+
+**Run:** 2026-06-27 18:42:35 UTC · **Search:** combined (ClinVar + UniProt) · **Summarizer:** openai (`gpt-4o-mini`)
+
+### Summary
+
+Muscle atrophy can be associated with several genetic conditions. One relevant protein is Myopalladin (Entry Name: MYPN_HUMAN), which is involved in congenital myopathy (CMYO24) characterized by muscle weakness and atrophy, particularly in the lower limbs and neck (ClinVar: VariationID not specified). Another protein, the Survival Motor Neuron protein (Entry Name: SMN_HUMAN), is linked to spinal muscular atrophy (SMA), a group of disorders that lead to muscle weakness and atrophy due to degeneration of spinal cord motor neurons (ClinVar: SMA1, SMA2, SMA3). Additionally, Four and a half LIM domains protein 1 (Entry Name: FHL1_HUMAN) is associated with various muscular dystrophies that also result in muscle weakness and atrophy (ClinVar: EDMD6, SPM, XMPMA). 
+
+In summary, muscle atrophy can be linked to genetic variants affecting proteins like Myopalladin, Survival Motor Neuron protein, and FHL1, which are involved in muscle function and development.
+
+---
+
+## Query: muscle atrophy
+
+**Run:** 2026-06-27 19:19:27 UTC · **Search:** combined (ClinVar + UniProt) · **Summarizer:** openai (`gpt-4o-mini`)
+
+### Summary
+
+The indexed data provides information related to muscle atrophy through several protein entries. 
+
+1. **ClinVar Evidence**: 
+   - The protein **Myopalladin (MYPN_HUMAN)** is associated with **Congenital myopathy 24 (CMYO24)**, which is characterized by slowly progressive muscle weakness and atrophy, particularly affecting the lower limbs and neck (ClinVar: CMYO24). 
+
+2. **Protein Evidence**: 
+   - **Myopalladin (Entry Name: MYPN_HUMAN)** is a sarcomeric protein involved in muscle structure and function. It plays a role in muscle development and is expressed in adult skeletal muscle (UniProt: MYPN_HUMAN).
+   - **Survival motor neuron protein (SMN_HUMAN)** is linked to **Spinal muscular atrophy (SMA)**, a group of disorders that lead to muscle weakness and atrophy due to degeneration of motor neurons (UniProt: SMN_HUMAN).
+   - **Four and a half LIM domains protein 1 (FHL1_HUMAN)** is involved in muscle development and is associated with various muscular dystrophies characterized by muscle weakness and atrophy (UniProt: FHL1_HUMAN).
+
+In summary, the evidence indicates that certain proteins are linked to conditions that cause muscle atrophy, highlighting their roles in muscle health and disease.
+
+---
+
+## Query: muscle atrophy
+
+**Run:** 2026-06-27 19:29:39 UTC · **Search:** combined (ClinVar + UniProt) · **Summarizer:** openai (`gpt-4o-mini`)
+
+### Summary
+
+The indexed data provides information related to muscle atrophy through several protein entries. 
+
+1. **ClinVar Evidence**: 
+   - The protein **Myopalladin (MYPN_HUMAN)** is associated with **Congenital myopathy 24 (CMYO24)**, which is characterized by slowly progressive muscle weakness and atrophy, particularly affecting the lower limbs and neck (ClinVar: CMYO24). 
+
+2. **Protein Evidence**: 
+   - **Myopalladin (Entry Name: MYPN_HUMAN)** is a sarcomeric protein involved in muscle structure and function. It plays a role in muscle development and is expressed in adult skeletal muscle (UniProt: Q86TC9).
+   - **Survival motor neuron protein (SMN_HUMAN)** is linked to **Spinal muscular atrophy (SMA)**, a group of disorders that lead to muscle weakness and atrophy due to degeneration of motor neurons (UniProt: Q16637).
+   - **Four and a half LIM domains protein 1 (FHL1_HUMAN)** is involved in muscle development and is associated with various muscular dystrophies characterized by muscle weakness and atrophy (UniProt: Q13642).
+
+In summary, the evidence indicates that certain proteins are linked to conditions that cause muscle atrophy, highlighting their roles in muscle health and disease.
+
+---
+
+## Query: muscle atrophy
+
+**Run:** 2026-06-27 19:35:05 UTC · **Search:** combined (ClinVar + UniProt) · **Summarizer:** openai (`gpt-4o-mini`)
+
+### Summary
+
+The evidence retrieved includes several proteins associated with muscle atrophy and related conditions:
+
+1. **ClinVar Evidence**:
+   - **MYPN (Myopalladin)**: Variants in this gene are linked to congenital myopathy (CMYO24), which is characterized by slowly progressive muscle weakness and atrophy, particularly affecting the lower limbs and neck (ClinVar: CMYO24).
+   - **SMN1 (Survival Motor Neuron 1)**: Variants in this gene are associated with spinal muscular atrophy (SMA), a group of neuromuscular disorders that lead to muscle weakness and atrophy (ClinVar: SMA1, SMA2, SMA3).
+   - **FHL1 (Four and a half LIM domains protein 1)**: Variants in this gene are implicated in various muscular dystrophies, including Emery-Dreifuss muscular dystrophy, which features muscle weakness and atrophy (ClinVar: EDMD6).
+   - **HSPB8 (Heat shock protein beta-8)**: Variants in this gene are linked to distal hereditary motor neuronopathy, which causes muscle atrophy and weakness (ClinVar: HMND2).
+   - **CAPN3 (Calpain-3)**: Variants in this gene are associated with limb-girdle muscular dystrophy, characterized by progressive muscle atrophy and weakness (ClinVar: LGMDR1).
+   - **DMD (Dystrophin)**: Variants in this gene are related to Duchenne muscular dystrophy, which leads to severe muscle atrophy and weakness (ClinVar: DMD).
+   - **WARS1 (Tryptophan--tRNA ligase)**: Variants in this gene are associated with distal hereditary motor neuronopathy, leading to muscle atrophy (ClinVar: HMND9).
+
+2. **UniProt Evidence**:
+   - **MYPN_HUMAN (Myopalladin)**: This protein is involved in muscle structure and is linked to congenital myopathy, which includes muscle atrophy (UniProt: MYPN_HUMAN).
+   - **SMN_HUMAN (Survival motor neuron protein)**: This protein is crucial for motor neuron health, and its deficiency leads to spinal muscular atrophy, characterized by muscle atrophy (UniProt: SMN_HUMAN).
+   - **FHL1_HUMAN (Four and a half LIM domains protein 1)**: This protein is involved in muscle development and is associated with muscular dystrophies that cause muscle atrophy (UniProt: FHL1_HUMAN).
+   - **HSPB8_HUMAN (Heat shock protein beta-8)**: This protein plays a role in muscle cell maintenance and is linked to conditions that cause muscle atrophy (UniProt: HSPB8_HUMAN).
+   - **CAN3_HUMAN (Calpain-3)**: This protein is involved in muscle maintenance, and its dysfunction is associated with muscular dystrophy leading to muscle atrophy (UniProt: CAN3_HUMAN).
+   - **DMD_HUMAN (Dystrophin)**: This protein is essential for muscle integrity, and its absence leads to muscle atrophy in conditions like Duchenne muscular dystrophy (UniProt: DMD_HUMAN).
+
+In summary, the evidence indicates that various genetic variants and associated proteins play significant roles in muscle atrophy through different muscular disorders.
+
+---
+
+## Query: telomere extension
+
+**Run:** 2026-06-27 19:36:34 UTC · **Search:** combined (ClinVar + UniProt) · **Summarizer:** openai (`gpt-4o-mini`)
+
+### Summary
+
+The indexed data contains several relevant proteins associated with telomere extension and maintenance:
+
+1. **UniProt Entry: TELT_HUMAN (O15273)** - This protein, known as Telethonin, is involved in muscle assembly and is associated with cardiomyopathy and muscular dystrophy. However, it does not directly relate to telomere extension.
+
+2. **UniProt Entry: TERB2_HUMAN (Q8NHR7)** - This protein, known as Telomere repeats-binding bouquet formation protein 2, plays a role in meiotic telomere attachment and is involved in telomere cap exchange, which is crucial for telomere maintenance.
+
+3. **UniProt Entry: TELO2_HUMAN (Q9Y4R8)** - The Telomere length regulation protein TEL2 homolog is involved in the DNA damage response and may regulate telomere length, making it relevant to telomere extension.
+
+4. **UniProt Entry: TCAB1_HUMAN (Q9BUR4)** - This protein, known as Telomerase Cajal body protein 1, is essential for telomere maintenance and telomerase activity, directly contributing to telomere elongation.
+
+5. **UniProt Entry: ACD_HUMAN (Q96AP0)** - The Adrenocortical dysplasia protein homolog is part of the shelterin complex, which regulates telomere length and protects chromosome ends, playing a significant role in telomere extension.
+
+6. **UniProt Entry: POTE1_HUMAN (Q9NUX5)** - This protein, Protection of telomeres protein 1, is involved in telomere length regulation and protection, and its variants are associated with telomere elongation.
+
+In summary, proteins such as TERB2, TELO2, TCAB1, ACD, and POTE1 are directly involved in telomere maintenance and extension processes.
+
+---
+
+## Query: What can we learn about telomere extension?
+
+**Run:** 2026-06-27 19:38:13 UTC · **Search:** combined (ClinVar + UniProt) · **Summarizer:** openai (`gpt-4o-mini`)
+
+### Summary
+
+The indexed ClinVar + UniProt data does not contain an answer to this query.
+
+---
+
+## Query: What can we learn about telomere extension?
+
+**Run:** 2026-06-27 19:39:10 UTC · **Search:** combined (ClinVar + UniProt) · **Summarizer:** openai (`gpt-4o-mini`)
+
+### Summary
+
+From the retrieved evidence, we can learn that telomere extension is regulated by several proteins involved in telomere maintenance and length regulation. 
+
+1. **UniProt Evidence**:
+   - **TELO2_HUMAN (Q9Y4R8)**: This protein is involved in telomere length regulation and is part of the TTT complex, which stabilizes proteins that respond to DNA damage. It plays a role in cellular resistance to DNA damage and may help in maintaining telomere length.
+   - **ACD_HUMAN (Q96AP0)**: This protein is a component of the shelterin complex, which protects telomeres and regulates their length. It enhances telomere elongation by recruiting telomerase to telomeres.
+   - **TINF2_HUMAN (Q9BSI4)**: Another component of the shelterin complex, it is involved in telomere length regulation and protection, playing a role in the assembly of the shelterin complex.
+   - **RTEL1_HUMAN (Q9NZ71)**: This helicase is implicated in telomere-length regulation and helps maintain genomic stability by preventing telomere fragility.
+   - **POTE1_HUMAN (Q9NUX5)**: This protein is part of the telomerase complex and regulates telomere length by binding to telomeric DNA and inhibiting telomerase activity.
+
+2. **ClinVar Evidence**: There are no specific ClinVar records provided that directly relate to telomere extension.
+
+In summary, proteins like TELO2, ACD, TINF2, RTEL1, and POTE1 are crucial for regulating telomere length and maintaining their integrity, which is essential for cellular health and longevity.
+
+---
+
+## Query: What can we learn about telomere extension?
+
+**Run:** 2026-06-27 19:56:30 UTC · **Search:** combined (ClinVar + UniProt) · **Summarizer:** openai (`gpt-4o-mini`)
+
+### Summary
+
+From the retrieved evidence, we can learn that telomere extension is influenced by several proteins involved in telomere maintenance and regulation. 
+
+1. **UniProt Entry: TELO2_HUMAN (Q9Y4R8)** - This protein, known as the Telomere length regulation protein TEL2 homolog, is involved in stabilizing proteins that are crucial for the DNA damage response and may play a role in telomere length regulation.
+
+2. **UniProt Entry: ACD_HUMAN (Q96AP0)** - The Adrenocortical dysplasia protein homolog is part of the shelterin complex, which protects telomeres and regulates their length. It enhances telomere elongation by recruiting telomerase to telomeres.
+
+3. **UniProt Entry: TINF2_HUMAN (Q9BSI4)** - This protein is also a component of the shelterin complex and plays a role in telomere length regulation and protection.
+
+4. **UniProt Entry: RTEL1_HUMAN (Q9NZ71)** - The Regulator of telomere elongation helicase 1 is implicated in telomere-length regulation and helps maintain genomic stability by counteracting harmful recombination events.
+
+5. **UniProt Entry: POT1_HUMAN (Q9NUX5)** - Protection of telomeres protein 1 is essential for telomere replication and regulation, acting as a component of the telomerase complex and influencing telomere length.
+
+These proteins collectively contribute to the mechanisms that regulate telomere length and protect chromosome ends, which are critical for cellular aging and stability.

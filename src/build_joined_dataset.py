@@ -1,4 +1,4 @@
-"""Outer-join cleaned UniProt + ClinVar parquets on gene and write data/processed/joined_rag.parquet.
+"""Outer-join cleaned UniProt + ClinVar parquets on gene and write data/processed/joined.parquet.
 
 Join key: UniProt primary gene (first token of "Gene Names") == ClinVar gene.
 ClinVar "GeneSymbol" is a ";"-delimited list of genes (e.g. "KLLN;LOC130004273;MLDHR;PTEN"),
@@ -6,7 +6,7 @@ so each variant is first exploded to one row per gene; the original list is kept
 "GeneSymbolFull". The result is row-level: one row per (protein, variant-gene) pair for
 shared genes, plus unmatched UniProt proteins (clinvar columns null) and unmatched ClinVar
 variant-genes (uniprot columns null). A unified `gene`, a `match_type` flag, and a synthetic
-`join_id` are added for EDA and downstream RAG indexing.
+`join_id` are added for EDA.
 """
 
 from pathlib import Path
@@ -18,7 +18,7 @@ data_processed = project_root / "data/processed"
 
 UNIPROT_CLEAN = data_processed / "uniprot_rag.parquet"
 CLINVAR_CLEAN = data_processed / "clinvar_rag.parquet"
-JOINED_OUT = data_processed / "joined_rag.parquet"
+JOINED_OUT = data_processed / "joined.parquet"
 
 GENE_KEY = "gene_key"
 
