@@ -253,8 +253,17 @@ NO_EVIDENCE_CONTEXT = (
     "User query: {query}\n\n"
     "No records passed the relevance threshold (min cosine similarity {min_similarity}; "
     "best match similarity was {best_similarity}). No relevant evidence was retrieved from "
-    "ClinVar or UniProt for this query."
+    "{sources} for this query."
 )
+
+_SOURCE_DISPLAY_NAMES = {"clinvar": "ClinVar", "uniprot": "UniProt"}
+
+
+def _format_source_list(source_names):
+    pretty = [_SOURCE_DISPLAY_NAMES.get(s, s) for s in source_names]
+    if len(pretty) <= 1:
+        return pretty[0] if pretty else "the indexed sources"
+    return " or ".join(pretty)
 
 
 def search_combined(
@@ -320,6 +329,7 @@ def search_combined(
             query=query,
             min_similarity=min_similarity,
             best_similarity=f"{best_similarity:.4f}" if best_similarity is not None else "n/a",
+            sources=_format_source_list(configs.keys()),
         )
         if verbose:
             print(f"\n{'=' * 60}\nNO RELEVANT EVIDENCE\n{'=' * 60}\n{context}")

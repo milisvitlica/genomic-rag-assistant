@@ -50,7 +50,19 @@ def _hit_label(hit, source=None):
     return ", ".join(f"{k}={v}" for k, v in sorted(meta.items()))
 
 
-def _search_label(search_mode, source_name, result):
+_SOURCE_DISPLAY_NAMES = {"clinvar": "ClinVar", "uniprot": "UniProt"}
+
+
+def _pretty_sources(sources):
+    return [_SOURCE_DISPLAY_NAMES.get(s, s) for s in sources]
+
+
+def _search_label(search_mode, source_name, result, sources=None):
+    if sources:
+        pretty = _pretty_sources(sources)
+        if len(pretty) == 1:
+            return pretty[0]
+        return "combined (" + " + ".join(pretty) + ")"
     if search_mode == "combined":
         return "combined (ClinVar + UniProt)"
     ranked = result.get("ranked", [])
@@ -74,6 +86,7 @@ def _run_metadata(
     *,
     search_mode=None,
     source_name=None,
+    sources=None,
     summarizer_backend="local",
     model_name=None,
 ):
@@ -81,7 +94,7 @@ def _run_metadata(
     return {
         "query": query,
         "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC"),
-        "search_mode": _search_label(search_mode, source_name, result),
+        "search_mode": _search_label(search_mode, source_name, result, sources),
         "summarizer_backend": summarizer_backend,
         "summarizer_model": model_name or "",
         "summary": summary or "",
@@ -111,6 +124,7 @@ def format_rag_report(
     *,
     search_mode=None,
     source_name=None,
+    sources=None,
     summarizer_backend="local",
     model_name=None,
 ):
@@ -120,6 +134,7 @@ def format_rag_report(
         summary,
         search_mode=search_mode,
         source_name=source_name,
+        sources=sources,
         summarizer_backend=summarizer_backend,
         model_name=model_name,
     )
@@ -154,6 +169,7 @@ def _build_csv_row(
     *,
     search_mode=None,
     source_name=None,
+    sources=None,
     summarizer_backend="local",
     model_name=None,
 ):
@@ -163,6 +179,7 @@ def _build_csv_row(
         summary,
         search_mode=search_mode,
         source_name=source_name,
+        sources=sources,
         summarizer_backend=summarizer_backend,
         model_name=model_name,
     )
@@ -189,6 +206,7 @@ def append_rag_csv(
     *,
     search_mode=None,
     source_name=None,
+    sources=None,
     summarizer_backend="local",
     model_name=None,
 ):
@@ -200,6 +218,7 @@ def append_rag_csv(
         summary,
         search_mode=search_mode,
         source_name=source_name,
+        sources=sources,
         summarizer_backend=summarizer_backend,
         model_name=model_name,
     )
@@ -223,6 +242,7 @@ def append_rag_report(
     *,
     search_mode=None,
     source_name=None,
+    sources=None,
     summarizer_backend="local",
     model_name=None,
     csv_path=None,
@@ -236,6 +256,7 @@ def append_rag_report(
         summary,
         search_mode=search_mode,
         source_name=source_name,
+        sources=sources,
         summarizer_backend=summarizer_backend,
         model_name=model_name,
     )
@@ -256,6 +277,7 @@ def append_rag_report(
         summary,
         search_mode=search_mode,
         source_name=source_name,
+        sources=sources,
         summarizer_backend=summarizer_backend,
         model_name=model_name,
     )

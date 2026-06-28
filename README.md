@@ -8,9 +8,54 @@ Semantic search and summarization over curated **ClinVar** variants and **UniPro
 ingest_*.py          →  data/raw/
 build_*_index.py     →  data/processed/ + data/chroma_db/ (cosine space)
 build_joined_dataset.py →  data/processed/joined.parquet (EDA-only outer join)
-*_rag.ipynb          →  query → retrieve → summarize
-combined_rag.ipynb   →  cross-source search (ClinVar + UniProt) + relevance gate
+rag.ipynb            →  query → retrieve → summarize (ClinVar, UniProt, or both)
 *_eda.ipynb          →  exploration + scope characterization
+```
+
+
+
+## Getting started (first time)
+
+From the project root.
+
+**1. Install dependencies** (Python 3.10+). Use any environment manager you like — the only required step is:
+
+```bash
+pip install -r requirements.txt
+```
+
+A virtual environment is recommended to keep dependencies isolated, e.g.:
+
+```bash
+python -m venv venv && source venv/bin/activate
+pip install -r requirements.txt
+```
+
+**2. Build the data + vector index.** Each source needs an ingest step (downloads raw data) followed by an index step (cleans, chunks, embeds into ChromaDB). Run both:
+
+```bash
+# ClinVar variants
+python src/ingest_clinvar.py
+python src/build_clinvar_index.py
+
+# UniProt proteins
+python src/ingest_uniprot.py
+python src/build_uniprot_index.py
+```
+
+This populates `data/raw/`, `data/processed/`, and `data/chroma_db/`. You only need to rerun these when you want to refresh the underlying data.
+
+**3. Choose your summarizer.** Set `SUMMARIZER_BACKEND` in the notebook to `"local"` (a small model, no key needed) or `"openai"`. For OpenAI, add your API key to `.env`:
+
+```bash
+OPENAI_API_KEY=sk-...
+```
+
+**4. Query.** Open `notebooks/rag.ipynb`, set `query` and `SOURCES`, and run top to bottom:
+
+```python
+query = "What can we learn about telomere extension?"
+SOURCES = ["clinvar", "uniprot"]   # or ["clinvar"] / ["uniprot"] for a single source
 ```
 
 
@@ -54,39 +99,35 @@ Outer-joins the two cleaned parquets on **UniProt primary gene** (first token of
 
 
 
-## Query notebooks
+## Query notebook
 
-Open and run top to bottom:
+`notebooks/rag.ipynb` is the single entry point for querying. Open it and run top to bottom.
 
+Set two knobs at the top:
 
-| Notebook                       | Purpose                                                                                  |
-| ------------------------------ | ---------------------------------------------------------------------------------------- |
-| `notebooks/clinvar_rag.ipynb`  | Prompt for a query, search Chroma, build context from top hits, summarize                |
-| `notebooks/uniprot_rag.ipynb`  | Same flow for proteins                                                                   |
-| `notebooks/combined_rag.ipynb` | Search both collections, rank records globally, summarize with ClinVar + UniProt context |
+- `query` — the natural-language question.
+- `SOURCES` — which collections to search: `["clinvar", "uniprot"]` (both), `["clinvar"]`, or `["uniprot"]`.
 
+It uses `search_combined()` from `rag_search.py`: each selected source is queried independently, records are scored by their best chunk's **cosine similarity**, then the top results across the selected sources are merged and sent to the LLM (one full parquet row per record). With a single source this is just that source's ranking.
 
-**Single-source notebooks** use `search()` from `rag_search.py`. **Combined search** uses `search_combined()`: each source is queried independently, records are scored by their best chunk's **cosine similarity**, then the top results across ClinVar and UniProt are merged and sent to the LLM (one full parquet row per record).
+**Relevance gate.** `search_combined(..., min_similarity=...)` drops records whose best cosine similarity falls below a threshold. Off-topic / nonsense queries then retrieve nothing, the context becomes an explicit "no evidence" message, and the notebook abstains without an LLM call. Each record's similarity is also shown in the retrieval summary and passed into the LLM context. `MIN_SIMILARITY` is calibrated on this corpus (real queries ~0.67–0.86, nonsense ~0.41–0.53).
 
-**Relevance gate.** `search_combined(..., min_similarity=...)` drops records whose best cosine similarity falls below a threshold. Off-topic / nonsense queries then retrieve nothing, the context becomes an explicit "no evidence" message, and the notebook abstains without an LLM call. Each record's similarity is also shown in the retrieval summary and passed into the LLM context. Calibrated default `MIN_SIMILARITY = 0.55` (real queries ~0.67–0.86, nonsense ~0.41–0.53).
+`TOP_K_CHUNKS` is the chunk pool used for ranking; `TOP_K_RESULTS` is how many full records reach the LLM. The pool is wider than the result count because multi-chunk records collapse to one and the two sources are merged before the final cut.
 
-`TOP_K_CHUNKS` (default 20) is the chunk pool used for ranking; `TOP_K_RESULTS` (default 3) is how many full records reach the LLM. The pool is wider than the result count because multi-chunk records collapse to one and the two sources are merged before the final cut.
-
-Notebooks load only the **top-ranked records** from the processed parquet (not the full dataset) to keep memory use low.
+The notebook loads only the **top-ranked records** from the processed parquet (not the full dataset) to keep memory use low.
 
 Chunking mode can be changed via `CHUNK_MODE` at the top of each `build_*_index.py` script (`"merged"` or `"by_field"`).
 
-
-Set `SUMMARIZER_BACKEND` in each RAG notebook:
-
-
-| Backend             | Model                        | Notes                                                                   |
-| ------------------- | ---------------------------- | ----------------------------------------------------------------------- |
-| `"local"` (default) | `Qwen/Qwen2.5-0.5B-Instruct` | ~2GB RAM; use 3B only with 8GB+ RAM. GPU recommended for larger models. |
-| `"openai"`          | `gpt-4o-mini`                | Requires `OPENAI_API_KEY` in `.env`. No local model load.               |
+Set `SUMMARIZER_BACKEND` in the RAG notebook:
 
 
-To inspect retrieval without summarization, stop after the search cell and use `result["context"]`. After summarization, each notebook appends via `append_rag_report()`:
+| Backend    | Model                        | Notes                                                                   |
+| ---------- | ---------------------------- | ----------------------------------------------------------------------- |
+| `"local"`  | `Qwen/Qwen2.5-0.5B-Instruct` | ~2GB RAM; use 3B only with 8GB+ RAM. GPU recommended for larger models. |
+| `"openai"` | `gpt-4o-mini`                | Requires `OPENAI_API_KEY` in `.env`. No local model load.               |
+
+
+To inspect retrieval without summarization, stop after the search cell and use `result["context"]`. After summarization, the notebook appends via `append_rag_report()`:
 
 - `reports/rag_log.md` — query, timestamp, search mode, summarizer, summary (tracked in git)
 - `data/reports/rag_log.csv` — same fields plus ranked hits (JSON) and full LLM context (gitignored)
@@ -105,22 +146,6 @@ To inspect retrieval without summarization, stop after the search cell and use `
 
 Each EDA notebook has a **scope characterization** section (counts, field coverage, topical themes, free-text reachability) that feeds `docs/scope.md` — the data-derived description of what the RAG can and cannot answer. Regenerate `docs/scope.md` from these sections whenever the data is rebuilt.
 
-## Setup
-
-```bash
-python -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-```
-
-For OpenAI summarization, add your API key to `.env`:
-
-```bash
-OPENAI_API_KEY=sk-...
-```
-
-
-
 ## Project layout
 
 ```
@@ -134,11 +159,9 @@ src/
   rag_summary.py           # LLM load + summarization
   rag_export.py            # append RAG outputs to markdown + CSV
 notebooks/
+  rag.ipynb        # query → retrieve → summarize (ClinVar, UniProt, or both)
   clinvar_eda.ipynb
-  clinvar_rag.ipynb
   uniprot_eda.ipynb
-  uniprot_rag.ipynb
-  combined_rag.ipynb
   joined_eda.ipynb
 docs/
   scope.md        # data-derived scope (what the RAG can/can't answer)
@@ -169,7 +192,7 @@ Ideas for improving answer quality and trustworthiness:
 - **Groundedness / answerability gate (post-retrieval).** After retrieval, an LLM judge confirms the retrieved records actually address the query (keyword overlap ≠ an answer) and returns the subset to cite; abstain otherwise. More robust than a distance threshold alone.
 - **Threshold vs. k tuning.** Calibrate `MIN_SIMILARITY`, `TOP_K_CHUNKS`, and `TOP_K_RESULTS` on a labelled set of in/out-of-scope queries; consider a *relative* cutoff (keep records within ~0.05–0.08 similarity of the top hit) so sharp queries return more records and vague ones self-trim.
 - **Reranking.** Add a cross-encoder reranker (e.g. `bge-reranker-base`) over the chunk pool for better-calibrated relevance than bi-encoder cosine, at some latency cost.
-- **Larger summarizer LLM (optional).** Default `gpt-4o-mini` is sufficient for grounded summarization; offer `gpt-4o`/`gpt-4.1` as a high-faithfulness toggle for clinical queries. Reasoning-tier models are overkill here.
+- **Larger summarizer LLM (optional).** `gpt-4o-mini` is sufficient for grounded summarization; offer `gpt-4o`/`gpt-4.1` as a high-faithfulness toggle for clinical queries. Reasoning-tier models are overkill here.
 - **RAG on the joined data.** Promote `joined.parquet` from EDA-only to a gene-centric RAG (one record per gene = protein context + its clinical variants) for deterministic protein↔variant linkage on the ~142 overlapping genes.
 - **Logging for evaluation.** Add `abstained` / `gate_reason` columns to `rag_log.csv` to audit false abstentions and tune thresholds over time.
 
