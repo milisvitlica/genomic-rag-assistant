@@ -74,6 +74,9 @@ Open and run top to bottom:
 
 Notebooks load only the **top-ranked records** from the processed parquet (not the full dataset) to keep memory use low.
 
+Chunking mode can be changed via `CHUNK_MODE` at the top of each `build_*_index.py` script (`"merged"` or `"by_field"`).
+
+
 Set `SUMMARIZER_BACKEND` in each RAG notebook:
 
 
@@ -156,7 +159,7 @@ data/
 - **Vector store:** ChromaDB (cosine space)
 - **Summarization:** local `Qwen/Qwen2.5-0.5B-Instruct` (transformers + PyTorch) or OpenAI `gpt-4o-mini`
 
-Chunking mode can be changed via `CHUNK_MODE` at the top of each `build_*_index.py` script (`"merged"` or `"by_field"`).
+
 
 ## Next steps
 
